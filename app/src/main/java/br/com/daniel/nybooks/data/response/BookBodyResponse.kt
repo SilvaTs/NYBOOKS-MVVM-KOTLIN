@@ -1,4 +1,5 @@
-package br.com.daniel.nybooks.data.model.response
+package br.com.daniel.nybooks.data.response
+
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

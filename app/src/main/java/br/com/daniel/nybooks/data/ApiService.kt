@@ -1,4 +1,4 @@
-package br.com.daniel.nybooks.data.model
+package br.com.daniel.nybooks.data
 
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory

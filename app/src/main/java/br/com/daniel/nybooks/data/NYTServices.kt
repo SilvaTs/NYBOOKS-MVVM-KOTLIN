@@ -1,7 +1,6 @@
-package br.com.daniel.nybooks.data.model
+package br.com.daniel.nybooks.data
 
-
-import br.com.daniel.nybooks.data.model.response.BookBodyResponse
+import br.com.daniel.nybooks.data.response.BookBodyResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
