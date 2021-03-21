@@ -7,6 +7,10 @@
     <string name="books_error_400_generic">Erro não tratado</string>
     <string name="books_error_500_generic">Erro catastrófico</string>
 
+    <!-- Book Activity -->
+    <string name="book_title">Title</string>
+    <string name="book_author">Author</string>
+
     <!-- Book Details Activity -->
     <string name="book_details_title">Book Details</string>
     <string name="book_details_title_label">Title</string>
