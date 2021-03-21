@@ -2,6 +2,7 @@ package br.com.daniel.nybooks.presentation.books
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import br.com.daniel.nybooks.R
 import br.com.daniel.nybooks.data.ApiService
 import br.com.daniel.nybooks.data.model.Book
 import br.com.daniel.nybooks.data.response.BookBodyResponse
@@ -12,37 +13,51 @@ import retrofit2.Response
 class BooksViewModel : ViewModel() {
 
     val booksLiveData: MutableLiveData<List<Book>> = MutableLiveData()
-
+    val viewFlipperLiveData: MutableLiveData<Pair<Int, Int?>> = MutableLiveData()
     fun getBooks() {
 
-       ApiService.service.getBooks().enqueue(object: Callback<BookBodyResponse>{
+        ApiService.service.getBooks().enqueue(object : Callback<BookBodyResponse> {
 
-           override fun onResponse(call: Call<BookBodyResponse>, response: Response<BookBodyResponse>) {
-                if (response.isSuccessful) {
-                     val books: MutableList<Book> = mutableListOf()
+            override fun onResponse(
+                call: Call<BookBodyResponse>,
+                response: Response<BookBodyResponse>
+            ) {
+                when {
+                    response.isSuccessful -> {
+                        val books: MutableList<Book> = mutableListOf()
 
-                    response.body()?.let {bookBodyResponse ->
-                        for (resultResponse in bookBodyResponse.bookResults) {
-                              val book = Book(
-                                      title = resultResponse.bookDetailsResponses[0].title,
-                                      author = resultResponse.bookDetailsResponses[0].author,
-                                      description = resultResponse.bookDetailsResponses[0].description
-                              )
+                        response.body()?.let { bookBodyResponse ->
+                            for (resultResponse in bookBodyResponse.bookResults) {
+                                val book = resultResponse.bookDetailsResponses[0].getBookModel()
 
-                            books.add(book)
+                                books.add(book)
+                            }
+
                         }
 
+                        booksLiveData.value = books
+                        viewFlipperLiveData.value = Pair(VIEW_FLIPPER_BOOKS, null)
                     }
-
-                    booksLiveData.value = books
+                    response.code() == 401 -> {
+                        viewFlipperLiveData.value = Pair(VIEW_FLIPPER_ERROR, R.string.books_error_401)
+                    }
+                    else -> {
+                        viewFlipperLiveData.value =
+                            Pair(VIEW_FLIPPER_ERROR, R.string.books_error_400_generic)
+                    }
                 }
-           }
+            }
 
-           override fun onFailure(call: Call<BookBodyResponse>, t: Throwable) {
+            override fun onFailure(call: Call<BookBodyResponse>, t: Throwable) {
+                viewFlipperLiveData.value =
+                    Pair(VIEW_FLIPPER_ERROR, R.string.books_error_500_generic)
+            }
 
-           }
-
-       })
+        })
     }
 
+    companion object {
+        private const val VIEW_FLIPPER_BOOKS = 1
+        private const val VIEW_FLIPPER_ERROR = 2
+    }
 }
